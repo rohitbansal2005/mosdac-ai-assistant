@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, Bot, Search, MapPin, Presentation } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -13,20 +14,35 @@ import SmartStatsCards from '../components/SmartStatsCards';
 import ProjectPresentation from '../components/ProjectPresentation';
 
 const Index = () => {
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      type: 'bot',
-      content: 'नमस्ते! मैं आपका MOSDAC AI Assistant हूं। मैं satellite data, products, documentation और services के बारे में जानकारी दे सकता हूं। आप क्या जानना चाहते हैं?',
-      timestamp: new Date(),
-      entities: []
-    }
-  ]);
+  const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [activeTab, setActiveTab] = useState('chat');
   const [showPresentation, setShowPresentation] = useState(false);
+  const [currentLanguage, setCurrentLanguage] = useState('en');
   const messagesEndRef = useRef(null);
+
+  // Language-specific welcome messages
+  const welcomeMessages = {
+    en: 'Hello! I am your MOSDAC AI Assistant. I can provide information about satellite data, products, documentation, and services. What would you like to know?',
+    hi: 'नमस्ते! मैं आपका MOSDAC AI Assistant हूं। मैं satellite data, products, documentation और services के बारे में जानकारी दे सकता हूं। आप क्या जानना चाहते हैं?',
+    bn: 'নমস্কার! আমি আপনার MOSDAC AI Assistant। আমি satellite data, products, documentation এবং services সম্পর্কে তথ্য দিতে পারি। আপনি কী জানতে চান?',
+    ta: 'வணக்கம்! நான் உங்கள் MOSDAC AI Assistant. நான் satellite data, products, documentation மற்றும் services பற்றிய தகவல்களை வழங்க முடியும். நீங்கள் என்ன தெரிந்து கொள்ள விரும்புகிறீர்கள்?',
+    te: 'నమస్కారం! నేను మీ MOSDAC AI Assistant. నేను satellite data, products, documentation మరియు services గురించి సమాచారం అందించగలను. మీరు ఏమి తెలుసుకోవాలనుకుంటున్నారు?'
+  };
+
+  // Initialize messages with language-specific welcome message
+  useEffect(() => {
+    setMessages([
+      {
+        id: 1,
+        type: 'bot',
+        content: welcomeMessages[currentLanguage],
+        timestamp: new Date(),
+        entities: []
+      }
+    ]);
+  }, [currentLanguage]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -34,33 +50,59 @@ const Index = () => {
 
   useEffect(scrollToBottom, [messages]);
 
-  const mockResponses = [
-    {
-      keywords: ['weather', 'meteorological', 'temperature', 'rainfall', 'मौसम', 'तापमान'],
-      response: 'मैंने meteorological satellite data की जानकारी खोजी है। MOSDAC INSAT-3D और INSAT-3DR weather satellite products प्रदान करता है जिसमें temperature profiles, humidity, और precipitation data शामिल है। यह HDF5 format में global coverage के साथ उपलब्ध है।',
-      entities: ['INSAT-3D', 'INSAT-3DR', 'Temperature', 'Precipitation', 'HDF5']
-    },
-    {
-      keywords: ['ocean', 'oceansat', 'sea surface', 'coastal', 'समुद्र', 'तटीय'],
-      response: 'Oceansat-2 और Oceansat-3 comprehensive ocean color और sea surface temperature data प्रदान करते हैं। ये satellites chlorophyll concentration, suspended sediments, और coastal zone changes को monitor करते हैं। Data विभिन्न processing levels L1B से L3 तक उपलब्ध है।',
-      entities: ['Oceansat-2', 'Oceansat-3', 'Ocean Color', 'Sea Surface Temperature', 'L1B', 'L3']
-    },
-    {
-      keywords: ['land', 'vegetation', 'agriculture', 'ndvi', 'भूमि', 'कृषि', 'वनस्पति'],
-      response: 'भूमि और vegetation monitoring के लिए, हमारे पास Resourcesat series का data है जो NDVI, land use/land cover maps, और agricultural monitoring products प्रदान करता है। AWiFS और LISS sensors vegetation analysis के लिए multi-spectral data देते हैं।',
-      entities: ['Resourcesat', 'NDVI', 'AWiFS', 'LISS', 'Land Use', 'Agriculture']
-    },
-    {
-      keywords: ['download', 'access', 'registration', 'login', 'डाउनलोड', 'पंजीकरण'],
-      response: 'MOSDAC data access करने के लिए: 1) mosdac.gov.in/register पर register करें 2) अपना email verify करें 3) Login करके catalogs browse करें 4) Data pool या visualization tools का use करें। कुछ products के लिए bulk downloads की approval चाहिए।',
-      entities: ['Registration', 'Data Pool', 'Catalog', 'Bulk Download']
-    }
-  ];
+  // Enhanced multilingual responses
+  const mockResponses = {
+    en: [
+      {
+        keywords: ['weather', 'meteorological', 'temperature', 'rainfall'],
+        response: 'I found meteorological satellite data information. MOSDAC provides INSAT-3D and INSAT-3DR weather satellite products including temperature profiles, humidity, and precipitation data. Available in HDF5 format with global coverage.',
+        entities: ['INSAT-3D', 'INSAT-3DR', 'Temperature', 'Precipitation', 'HDF5']
+      },
+      {
+        keywords: ['ocean', 'oceansat', 'sea surface', 'coastal'],
+        response: 'Oceansat-2 and Oceansat-3 provide comprehensive ocean color and sea surface temperature data. These satellites monitor chlorophyll concentration, suspended sediments, and coastal zone changes. Data available from processing levels L1B to L3.',
+        entities: ['Oceansat-2', 'Oceansat-3', 'Ocean Color', 'Sea Surface Temperature', 'L1B', 'L3']
+      },
+      {
+        keywords: ['land', 'vegetation', 'agriculture', 'ndvi'],
+        response: 'For land and vegetation monitoring, we have Resourcesat series data providing NDVI, land use/land cover maps, and agricultural monitoring products. AWiFS and LISS sensors provide multi-spectral data for vegetation analysis.',
+        entities: ['Resourcesat', 'NDVI', 'AWiFS', 'LISS', 'Land Use', 'Agriculture']
+      },
+      {
+        keywords: ['download', 'access', 'registration', 'login'],
+        response: 'To access MOSDAC data: 1) Register at mosdac.gov.in/register 2) Verify your email 3) Login and browse catalogs 4) Use Data pool or visualization tools. Some products require bulk download approval.',
+        entities: ['Registration', 'Data Pool', 'Catalog', 'Bulk Download']
+      }
+    ],
+    hi: [
+      {
+        keywords: ['weather', 'meteorological', 'temperature', 'rainfall', 'मौसम', 'तापमान'],
+        response: 'मैंने meteorological satellite data की जानकारी खोजी है। MOSDAC INSAT-3D और INSAT-3DR weather satellite products प्रदान करता है जिसमें temperature profiles, humidity, और precipitation data शामिल है। यह HDF5 format में global coverage के साथ उपलब्ध है।',
+        entities: ['INSAT-3D', 'INSAT-3DR', 'Temperature', 'Precipitation', 'HDF5']
+      },
+      {
+        keywords: ['ocean', 'oceansat', 'sea surface', 'coastal', 'समुद्र', 'तटीय'],
+        response: 'Oceansat-2 और Oceansat-3 comprehensive ocean color और sea surface temperature data प्रदान करते हैं। ये satellites chlorophyll concentration, suspended sediments, और coastal zone changes को monitor करते हैं। Data विभिन्न processing levels L1B से L3 तक उपलब्ध है।',
+        entities: ['Oceansat-2', 'Oceansat-3', 'Ocean Color', 'Sea Surface Temperature', 'L1B', 'L3']
+      },
+      {
+        keywords: ['land', 'vegetation', 'agriculture', 'ndvi', 'भूमि', 'कृषि', 'वनस्पति'],
+        response: 'भूमि और vegetation monitoring के लिए, हमारे पास Resourcesat series का data है जो NDVI, land use/land cover maps, और agricultural monitoring products प्रदान करता है। AWiFS और LISS sensors vegetation analysis के लिए multi-spectral data देते हैं।',
+        entities: ['Resourcesat', 'NDVI', 'AWiFS', 'LISS', 'Land Use', 'Agriculture']
+      },
+      {
+        keywords: ['download', 'access', 'registration', 'login', 'डाउनलोड', 'पंजीकरण'],
+        response: 'MOSDAC data access करने के लिए: 1) mosdac.gov.in/register पर register करें 2) अपना email verify करें 3) Login करके catalogs browse करें 4) Data pool या visualization tools का use करें। कुछ products के लिए bulk downloads की approval चाहिए।',
+        entities: ['Registration', 'Data Pool', 'Catalog', 'Bulk Download']
+      }
+    ]
+  };
 
   const generateBotResponse = (userMessage) => {
     const lowerMessage = userMessage.toLowerCase();
+    const languageResponses = mockResponses[currentLanguage] || mockResponses.en;
     
-    for (const mock of mockResponses) {
+    for (const mock of languageResponses) {
       if (mock.keywords.some(keyword => lowerMessage.includes(keyword))) {
         return {
           content: mock.response,
@@ -69,8 +111,17 @@ const Index = () => {
       }
     }
     
+    // Default responses based on language
+    const defaultResponses = {
+      en: 'I understand you want information about satellite data and services. Please be more specific about what you need. For example, you can ask about specific satellites, data products, download procedures, or technical specifications.',
+      hi: 'मैं समझ गया कि आप satellite data और services के बारे में जानकारी चाहते हैं। कृपया अधिक specific बताएं कि आपको क्या चाहिए? उदाहरण के लिए, आप specific satellites, data products, download procedures, या technical specifications के बारे में पूछ सकते हैं।',
+      bn: 'আমি বুঝতে পারি যে আপনি satellite data এবং services সম্পর্কে তথ্য চান। অনুগ্রহ করে আরও specific বলুন যে আপনার কী প্রয়োজন? উদাহরণস্বরূপ, আপনি specific satellites, data products, download procedures, বা technical specifications সম্পর্কে জিজ্ঞাস করতে পারেন।',
+      ta: 'நீங்கள் satellite data மற்றும் services பற்றிய தகவல்களை விரும்புகிறீர்கள் என்று நான் புரிந்துகொள்கிறேன். தயவு செய்து உங்களுக்கு என்ன தேவை என்பதை மிகவும் specific ஆக சொல்லுங்கள்? உதாரணமாக, நீங்கள் specific satellites, data products, download procedures, அல்லது technical specifications பற்றி கேட்கலாம்।',
+      te: 'మీకు satellite data మరియు services గురించి సమాచారం కావాలని నేను అర్థం చేసుకున్నాను. దయచేసి మీకు ఏమి అవసరమో మరింత specific గా చెప్పండి? ఉదాహరణకు, మీరు specific satellites, data products, download procedures, లేదా technical specifications గురించి అడగవచ్చు。'
+    };
+    
     return {
-      content: 'मैं समझ गया कि आप satellite data और services के बारे में जानकारी चाहते हैं। कृपया अधिक specific बताएं कि आपको क्या चाहिए? उदाहरण के लिए, आप specific satellites, data products, download procedures, या technical specifications के बारे में पूछ सकते हैं।',
+      content: defaultResponses[currentLanguage] || defaultResponses.en,
       entities: ['Help', 'Guidance', 'Specification']
     };
   };
@@ -115,9 +166,32 @@ const Index = () => {
     }
   };
 
+  // Language-specific placeholders
+  const placeholders = {
+    en: 'Ask about satellite data, products, documentation...',
+    hi: 'Satellite data, products, documentation के बारे में पूछें...',
+    bn: 'Satellite data, products, documentation সম্পর্কে জিজ্ঞাস করুন...',
+    ta: 'Satellite data, products, documentation பற்றி கேளுங்கள்...',
+    te: 'Satellite data, products, documentation గురించి అడగండి...'
+  };
+
+  // Typing indicators
+  const typingTexts = {
+    en: 'AI is thinking...',
+    hi: 'AI सोच रहा है...',
+    bn: 'AI চিন্তা করছে...',
+    ta: 'AI யோசித்துக் கொண்டிருக்கிறது...',
+    te: 'AI ఆలోచిస్తోంది...'
+  };
+
   return (
     <ResponsiveLayout>
-      <EnhancedHeader activeTab={activeTab} setActiveTab={setActiveTab} />
+      <EnhancedHeader 
+        activeTab={activeTab} 
+        setActiveTab={setActiveTab}
+        currentLanguage={currentLanguage}
+        setCurrentLanguage={setCurrentLanguage}
+      />
       
       <div className="py-2 sm:py-6">
         <SmartStatsCards />
@@ -172,7 +246,7 @@ const Index = () => {
                           <div className="animate-bounce w-2 h-2 bg-blue-600 rounded-full" style={{animationDelay: '0.1s'}}></div>
                           <div className="animate-bounce w-2 h-2 bg-blue-600 rounded-full" style={{animationDelay: '0.2s'}}></div>
                         </div>
-                        <span className="text-sm">AI सोच रहा है...</span>
+                        <span className="text-sm">{typingTexts[currentLanguage]}</span>
                       </div>
                     )}
                     <div ref={messagesEndRef} />
@@ -184,7 +258,7 @@ const Index = () => {
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
                         onKeyPress={handleKeyPress}
-                        placeholder="Satellite data, products, documentation के बारे में पूछें..."
+                        placeholder={placeholders[currentLanguage]}
                         className="flex-1 bg-white text-sm"
                       />
                       <Button 
@@ -211,7 +285,7 @@ const Index = () => {
             {showPresentation ? (
               <ProjectPresentation />
             ) : (
-              <QuerySuggestions onSuggestionClick={handleSuggestionClick} />
+              <QuerySuggestions onSuggestionClick={handleSuggestionClick} currentLanguage={currentLanguage} />
             )}
             
             <Card className="bg-white/90 backdrop-blur-sm shadow-lg border-0">

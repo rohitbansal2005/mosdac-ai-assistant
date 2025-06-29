@@ -9,9 +9,11 @@ import AuthButtons from './AuthButtons';
 interface EnhancedHeaderProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  currentLanguage: string;
+  setCurrentLanguage: (lang: string) => void;
 }
 
-const EnhancedHeader = ({ activeTab, setActiveTab }: EnhancedHeaderProps) => {
+const EnhancedHeader = ({ activeTab, setActiveTab, currentLanguage, setCurrentLanguage }: EnhancedHeaderProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
@@ -30,7 +32,7 @@ const EnhancedHeader = ({ activeTab, setActiveTab }: EnhancedHeaderProps) => {
               <p className="text-xs sm:text-sm text-gray-600 flex items-center space-x-1">
                 <Globe className="h-3 w-3" />
                 <span>World's Best Satellite Data AI</span>
-                <Badge variant="secondary" className="text-xs">v2.0</Badge>
+                <Badge variant="secondary" className="text-xs">v2.1</Badge>
               </p>
             </div>
             <div className="sm:hidden">
@@ -56,7 +58,7 @@ const EnhancedHeader = ({ activeTab, setActiveTab }: EnhancedHeaderProps) => {
             >
               Knowledge Graph
             </Button>
-            <LanguageToggle />
+            <LanguageToggle currentLanguage={currentLanguage} setCurrentLanguage={setCurrentLanguage} />
             <AuthButtons />
             <Button variant="ghost" size="sm">
               <Settings className="h-4 w-4" />
@@ -65,7 +67,7 @@ const EnhancedHeader = ({ activeTab, setActiveTab }: EnhancedHeaderProps) => {
 
           {/* Mobile Menu Button */}
           <div className="flex items-center space-x-2 md:hidden">
-            <LanguageToggle />
+            <LanguageToggle currentLanguage={currentLanguage} setCurrentLanguage={setCurrentLanguage} />
             <AuthButtons />
             <Button
               variant="ghost"

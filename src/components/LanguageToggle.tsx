@@ -1,8 +1,8 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Languages, Globe } from 'lucide-react';
+import { Globe } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,9 +10,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const LanguageToggle = () => {
-  const [currentLanguage, setCurrentLanguage] = useState('en');
-  
+interface LanguageToggleProps {
+  currentLanguage: string;
+  setCurrentLanguage: (lang: string) => void;
+}
+
+const LanguageToggle = ({ currentLanguage, setCurrentLanguage }: LanguageToggleProps) => {
   const languages = [
     { code: 'en', name: 'English', flag: '🇺🇸' },
     { code: 'hi', name: 'हिंदी', flag: '🇮🇳' },
@@ -23,7 +26,6 @@ const LanguageToggle = () => {
 
   const handleLanguageChange = (langCode: string) => {
     setCurrentLanguage(langCode);
-    // Here you would integrate with your translation service
     console.log(`Language changed to: ${langCode}`);
   };
 
