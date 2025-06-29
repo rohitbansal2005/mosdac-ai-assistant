@@ -16,16 +16,16 @@ const SmartStatsCards = () => {
   ];
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 sm:gap-4 mb-6">
+    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-4 mb-4 sm:mb-6">
       {stats.map((stat, index) => (
         <Card key={index} className="bg-white/80 backdrop-blur-sm hover:shadow-lg transition-all duration-300 hover:scale-105 border-0 shadow-sm">
-          <CardContent className="p-3 sm:p-4">
-            <div className="flex flex-col items-center text-center space-y-2">
-              <div className={`p-2 rounded-lg ${stat.bgColor}`}>
-                <stat.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${stat.color}`} />
+          <CardContent className="p-2 sm:p-4">
+            <div className="flex flex-col items-center text-center space-y-1 sm:space-y-2">
+              <div className={`p-1.5 sm:p-2 rounded-lg ${stat.bgColor}`}>
+                <stat.icon className={`h-3 w-3 sm:h-5 sm:w-5 ${stat.color}`} />
               </div>
               <div>
-                <p className="text-lg sm:text-xl font-bold text-gray-900">{stat.value}</p>
+                <p className="text-sm sm:text-xl font-bold text-gray-900">{stat.value}</p>
                 <p className="text-xs text-gray-600 leading-tight">{stat.label}</p>
               </div>
             </div>

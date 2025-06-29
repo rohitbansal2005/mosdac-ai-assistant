@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Bot, Search, MapPin } from 'lucide-react';
+import { Send, Bot, Search, MapPin, Presentation } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,9 +10,9 @@ import QuerySuggestions from '../components/QuerySuggestions';
 import ResponsiveLayout from '../components/ResponsiveLayout';
 import EnhancedHeader from '../components/EnhancedHeader';
 import SmartStatsCards from '../components/SmartStatsCards';
+import ProjectPresentation from '../components/ProjectPresentation';
 
 const Index = () => {
-  // ... keep existing code (state declarations and useEffect)
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -25,6 +25,7 @@ const Index = () => {
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [activeTab, setActiveTab] = useState('chat');
+  const [showPresentation, setShowPresentation] = useState(false);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -33,7 +34,6 @@ const Index = () => {
 
   useEffect(scrollToBottom, [messages]);
 
-  // ... keep existing code (mockResponses, generateBotResponse, handleSendMessage, handleSuggestionClick, handleKeyPress)
   const mockResponses = [
     {
       keywords: ['weather', 'meteorological', 'temperature', 'rainfall', 'मौसम', 'तापमान'],
@@ -119,31 +119,42 @@ const Index = () => {
     <ResponsiveLayout>
       <EnhancedHeader activeTab={activeTab} setActiveTab={setActiveTab} />
       
-      <div className="py-4 sm:py-6">
+      <div className="py-2 sm:py-6">
         <SmartStatsCards />
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-3 sm:gap-6">
           {/* Chat/Graph Panel */}
           <div className="xl:col-span-2">
-            <Card className="bg-white/90 backdrop-blur-sm h-[500px] sm:h-[600px] flex flex-col shadow-xl border-0">
+            <Card className="bg-white/90 backdrop-blur-sm h-[400px] sm:h-[600px] flex flex-col shadow-xl border-0">
               <CardHeader className="pb-3">
-                <CardTitle className="flex items-center space-x-2">
-                  {activeTab === 'chat' ? (
-                    <>
-                      <Bot className="h-5 w-5 text-blue-600" />
-                      <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                        AI Chat Assistant
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <Search className="h-5 w-5 text-blue-600" />
-                      <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                        Knowledge Graph
-                      </span>
-                    </>
-                  )}
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    {activeTab === 'chat' ? (
+                      <>
+                        <Bot className="h-5 w-5 text-blue-600" />
+                        <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                          AI Chat Assistant
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <Search className="h-5 w-5 text-blue-600" />
+                        <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                          Knowledge Graph
+                        </span>
+                      </>
+                    )}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowPresentation(!showPresentation)}
+                    className="text-xs"
+                  >
+                    <Presentation className="h-4 w-4 mr-1" />
+                    PPT
+                  </Button>
                 </CardTitle>
               </CardHeader>
               
@@ -174,12 +185,13 @@ const Index = () => {
                         onChange={(e) => setInputValue(e.target.value)}
                         onKeyPress={handleKeyPress}
                         placeholder="Satellite data, products, documentation के बारे में पूछें..."
-                        className="flex-1 bg-white"
+                        className="flex-1 bg-white text-sm"
                       />
                       <Button 
                         onClick={handleSendMessage} 
                         disabled={!inputValue.trim()}
                         className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                        size="sm"
                       >
                         <Send className="h-4 w-4" />
                       </Button>
@@ -195,8 +207,12 @@ const Index = () => {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-4 sm:space-y-6">
-            <QuerySuggestions onSuggestionClick={handleSuggestionClick} />
+          <div className="space-y-3 sm:space-y-6">
+            {showPresentation ? (
+              <ProjectPresentation />
+            ) : (
+              <QuerySuggestions onSuggestionClick={handleSuggestionClick} />
+            )}
             
             <Card className="bg-white/90 backdrop-blur-sm shadow-lg border-0">
               <CardHeader>
@@ -208,7 +224,7 @@ const Index = () => {
               <CardContent className="space-y-3">
                 <div className="grid grid-cols-1 gap-2">
                   {['Geospatial Queries', 'Multi-language Support', 'Voice Commands', 'Real-time Data', 'Smart Suggestions', 'Context Awareness'].map((capability) => (
-                    <Badge key={capability} variant="secondary" className="justify-center py-1">
+                    <Badge key={capability} variant="secondary" className="justify-center py-1 text-xs">
                       {capability}
                     </Badge>
                   ))}
