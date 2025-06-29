@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Bot, Search, MapPin, Presentation } from 'lucide-react';
+import { Send, Bot, Search, MapPin, Satellite } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,24 +10,22 @@ import QuerySuggestions from '../components/QuerySuggestions';
 import ResponsiveLayout from '../components/ResponsiveLayout';
 import EnhancedHeader from '../components/EnhancedHeader';
 import SmartStatsCards from '../components/SmartStatsCards';
-import ProjectPresentation from '../components/ProjectPresentation';
 
 const Index = () => {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [activeTab, setActiveTab] = useState('chat');
-  const [showPresentation, setShowPresentation] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState('en');
   const messagesEndRef = useRef(null);
 
-  // Language-specific welcome messages
+  // Language-specific welcome messages with space theme
   const welcomeMessages = {
-    en: 'Hello! I am your MOSDAC AI Assistant. I can provide information about satellite data, products, documentation, and services. What would you like to know?',
-    hi: 'नमस्ते! मैं आपका MOSDAC AI Assistant हूं। मैं satellite data, products, documentation और services के बारे में जानकारी दे सकता हूं। आप क्या जानना चाहते हैं?',
-    bn: 'নমস্কার! আমি আপনার MOSDAC AI Assistant। আমি satellite data, products, documentation এবং services সম্পর্কে তথ্য দিতে পারি। আপনি কী জানতে চান?',
-    ta: 'வணக்கம்! நான் உங்கள் MOSDAC AI Assistant. நான் satellite data, products, documentation மற்றும் services பற்றிய தகவல்களை வழங்க முடியும். நீங்கள் என்ன தெரிந்து கொள்ள விரும்புகிறீர்கள்?',
-    te: 'నమస్కారం! నేను మీ MOSDAC AI Assistant. నేను satellite data, products, documentation మరియు services గురించి సమాచారం అందించగలను. మీరు ఏమి తెలుసుకోవాలనుకుంటున్నారు?'
+    en: '🚀 Welcome to MOSDAC Space AI! I am your intelligent assistant for satellite data, space missions, and ISRO services. Ready to explore the cosmos of data with you! What would you like to discover?',
+    hi: '🚀 MOSDAC Space AI में आपका स्वागत है! मैं satellite data, space missions और ISRO services का आपका बुद्धिमान सहायक हूं। आपके साथ data के ब्रह्मांड की खोज के लिए तैयार हूं! आप क्या खोजना चाहते हैं?',
+    bn: '🚀 MOSDAC Space AI তে স্বাগতম! আমি satellite data, space missions এবং ISRO services এর জন্য আপনার বুদ্ধিমান সহায়ক। আপনার সাথে data এর মহাকাশ অন্বেষণ করতে প্রস্তুত! আপনি কী আবিষ্কার করতে চান?',
+    ta: '🚀 MOSDAC Space AI க்கு வரவேற்கிறோம்! நான் satellite data, space missions மற்றும் ISRO services க்கான உங்கள் அறிவார்ந்த உதவியாளர். உங்களுடன் data வின் பிரபஞ்சத்தை ஆராய தயாராக இருக்கிறேன்! நீங்கள் என்ன கண்டுபிடிக்க விரும்புகிறீர்கள்?',
+    te: '🚀 MOSDAC Space AI కి స్వాగతం! నేను satellite data, space missions మరియు ISRO services కోసం మీ తెలివైన సహాయకుడను। మీతో data యొక్క విశ్వాన్ని అన్వేషించడానికి సిద్ధంగా ఉన్నాను! మీరు ఏమి కనుగొనాలనుకుంటున్నారు?'
   };
 
   // Initialize messages with language-specific welcome message
@@ -50,49 +47,49 @@ const Index = () => {
 
   useEffect(scrollToBottom, [messages]);
 
-  // Enhanced multilingual responses
+  // Enhanced multilingual responses with space theme
   const mockResponses = {
     en: [
       {
         keywords: ['weather', 'meteorological', 'temperature', 'rainfall'],
-        response: 'I found meteorological satellite data information. MOSDAC provides INSAT-3D and INSAT-3DR weather satellite products including temperature profiles, humidity, and precipitation data. Available in HDF5 format with global coverage.',
+        response: '🛰️ Found meteorological satellite data! INSAT-3D and INSAT-3DR provide comprehensive weather monitoring from space. These advanced satellites deliver temperature profiles, humidity data, and precipitation measurements with global coverage in HDF5 format.',
         entities: ['INSAT-3D', 'INSAT-3DR', 'Temperature', 'Precipitation', 'HDF5']
       },
       {
         keywords: ['ocean', 'oceansat', 'sea surface', 'coastal'],
-        response: 'Oceansat-2 and Oceansat-3 provide comprehensive ocean color and sea surface temperature data. These satellites monitor chlorophyll concentration, suspended sediments, and coastal zone changes. Data available from processing levels L1B to L3.',
+        response: '🌊 Oceansat-2 and Oceansat-3 are India\'s ocean observation champions! They monitor ocean color, sea surface temperature, chlorophyll concentration, and coastal zone dynamics. Data available from L1B to L3 processing levels for comprehensive marine analysis.',
         entities: ['Oceansat-2', 'Oceansat-3', 'Ocean Color', 'Sea Surface Temperature', 'L1B', 'L3']
       },
       {
         keywords: ['land', 'vegetation', 'agriculture', 'ndvi'],
-        response: 'For land and vegetation monitoring, we have Resourcesat series data providing NDVI, land use/land cover maps, and agricultural monitoring products. AWiFS and LISS sensors provide multi-spectral data for vegetation analysis.',
+        response: '🌱 Resourcesat series satellites provide excellent land and vegetation monitoring! NDVI calculations, land use/land cover mapping, and agricultural monitoring through AWiFS and LISS sensors for multi-spectral vegetation analysis.',
         entities: ['Resourcesat', 'NDVI', 'AWiFS', 'LISS', 'Land Use', 'Agriculture']
       },
       {
         keywords: ['download', 'access', 'registration', 'login'],
-        response: 'To access MOSDAC data: 1) Register at mosdac.gov.in/register 2) Verify your email 3) Login and browse catalogs 4) Use Data pool or visualization tools. Some products require bulk download approval.',
+        response: '📥 To access MOSDAC space data: 1) Register at mosdac.gov.in/register 2) Verify email 3) Login and explore catalogs 4) Use Data Pool or visualization tools. Some premium products require bulk download approval.',
         entities: ['Registration', 'Data Pool', 'Catalog', 'Bulk Download']
       }
     ],
     hi: [
       {
         keywords: ['weather', 'meteorological', 'temperature', 'rainfall', 'मौसम', 'तापमान'],
-        response: 'मैंने meteorological satellite data की जानकारी खोजी है। MOSDAC INSAT-3D और INSAT-3DR weather satellite products प्रदान करता है जिसमें temperature profiles, humidity, और precipitation data शामिल है। यह HDF5 format में global coverage के साथ उपलब्ध है।',
+        response: '🛰️ Meteorological satellite data मिल गया! INSAT-3D और INSAT-3DR अंतरिक्ष से comprehensive weather monitoring प्रदान करते हैं। ये advanced satellites temperature profiles, humidity data, और precipitation measurements HDF5 format में global coverage के साथ देते हैं।',
         entities: ['INSAT-3D', 'INSAT-3DR', 'Temperature', 'Precipitation', 'HDF5']
       },
       {
         keywords: ['ocean', 'oceansat', 'sea surface', 'coastal', 'समुद्र', 'तटीय'],
-        response: 'Oceansat-2 और Oceansat-3 comprehensive ocean color और sea surface temperature data प्रदान करते हैं। ये satellites chlorophyll concentration, suspended sediments, और coastal zone changes को monitor करते हैं। Data विभिन्न processing levels L1B से L3 तक उपलब्ध है।',
+        response: '🌊 Oceansat-2 और Oceansat-3 भारत के ocean observation champions हैं! ये ocean color, sea surface temperature, chlorophyll concentration, और coastal zone dynamics को monitor करते हैं। L1B से L3 processing levels तक comprehensive marine analysis के लिए data उपलब्ध है।',
         entities: ['Oceansat-2', 'Oceansat-3', 'Ocean Color', 'Sea Surface Temperature', 'L1B', 'L3']
       },
       {
         keywords: ['land', 'vegetation', 'agriculture', 'ndvi', 'भूमि', 'कृषि', 'वनस्पति'],
-        response: 'भूमि और vegetation monitoring के लिए, हमारे पास Resourcesat series का data है जो NDVI, land use/land cover maps, और agricultural monitoring products प्रदान करता है। AWiFS और LISS sensors vegetation analysis के लिए multi-spectral data देते हैं।',
+        response: '🌱 Resourcesat series satellites excellent land और vegetation monitoring प्रदान करते हैं! NDVI calculations, land use/land cover mapping, और AWiFS तथा LISS sensors के through agricultural monitoring multi-spectral vegetation analysis के लिए।',
         entities: ['Resourcesat', 'NDVI', 'AWiFS', 'LISS', 'Land Use', 'Agriculture']
       },
       {
         keywords: ['download', 'access', 'registration', 'login', 'डाउनलोड', 'पंजीकरण'],
-        response: 'MOSDAC data access करने के लिए: 1) mosdac.gov.in/register पर register करें 2) अपना email verify करें 3) Login करके catalogs browse करें 4) Data pool या visualization tools का use करें। कुछ products के लिए bulk downloads की approval चाहिए।',
+        response: '📥 MOSDAC space data access करने के लिए: 1) mosdac.gov.in/register पर register करें 2) Email verify करें 3) Login करके catalogs explore करें 4) Data Pool या visualization tools use करें। कुछ premium products के लिए bulk download approval चाहिए।',
         entities: ['Registration', 'Data Pool', 'Catalog', 'Bulk Download']
       }
     ]
@@ -111,13 +108,13 @@ const Index = () => {
       }
     }
     
-    // Default responses based on language
+    // Default responses based on language with space theme
     const defaultResponses = {
-      en: 'I understand you want information about satellite data and services. Please be more specific about what you need. For example, you can ask about specific satellites, data products, download procedures, or technical specifications.',
-      hi: 'मैं समझ गया कि आप satellite data और services के बारे में जानकारी चाहते हैं। कृपया अधिक specific बताएं कि आपको क्या चाहिए? उदाहरण के लिए, आप specific satellites, data products, download procedures, या technical specifications के बारे में पूछ सकते हैं।',
-      bn: 'আমি বুঝতে পারি যে আপনি satellite data এবং services সম্পর্কে তথ্য চান। অনুগ্রহ করে আরও specific বলুন যে আপনার কী প্রয়োজন? উদাহরণস্বরূপ, আপনি specific satellites, data products, download procedures, বা technical specifications সম্পর্কে জিজ্ঞাস করতে পারেন।',
-      ta: 'நீங்கள் satellite data மற்றும் services பற்றிய தகவல்களை விரும்புகிறீர்கள் என்று நான் புரிந்துகொள்கிறேன். தயவு செய்து உங்களுக்கு என்ன தேவை என்பதை மிகவும் specific ஆக சொல்லுங்கள்? உதாரணமாக, நீங்கள் specific satellites, data products, download procedures, அல்லது technical specifications பற்றி கேட்கலாம்।',
-      te: 'మీకు satellite data మరియు services గురించి సమాచారం కావాలని నేను అర్థం చేసుకున్నాను. దయచేసి మీకు ఏమి అవసరమో మరింత specific గా చెప్పండి? ఉదాహరణకు, మీరు specific satellites, data products, download procedures, లేదా technical specifications గురించి అడగవచ్చు。'
+      en: '🚀 I understand you want space-related information! Please be more specific about satellite data, space missions, or ISRO services. Ask about specific satellites, data products, download procedures, or technical specifications.',
+      hi: '🚀 मैं समझ गया कि आप space-related जानकारी चाहते हैं! कृपया satellite data, space missions, या ISRO services के बारे में अधिक specific बताएं। Specific satellites, data products, download procedures, या technical specifications के बारे में पूछें।',
+      bn: '🚀 আমি বুঝতে পারি যে আপনি space-related তথ্য চান! দয়া করে satellite data, space missions, বা ISRO services সম্পর্কে আরও specific বলুন। Specific satellites, data products, download procedures, বা technical specifications সম্পর্কে জিজ্ঞাস করুন।',
+      ta: '🚀 நீங்கள் space-related தகவல்களை விரும்புகிறீர்கள் என்று புரிகிறது! Satellite data, space missions, அல்லது ISRO services பற்றி மிகவும் specific ஆக சொல்லுங்கள். Specific satellites, data products, download procedures, அல்லது technical specifications பற்றி கேளுங்கள்।',
+      te: '🚀 మీకు space-related సమాచారం కావాలని అర్థమైంది! Satellite data, space missions, లేదా ISRO services గురించి మరింత specific గా చెప్పండి। Specific satellites, data products, download procedures, లేదా technical specifications గురించి అడగండి।'
     };
     
     return {
@@ -166,22 +163,22 @@ const Index = () => {
     }
   };
 
-  // Language-specific placeholders
+  // Language-specific placeholders with space theme
   const placeholders = {
-    en: 'Ask about satellite data, products, documentation...',
-    hi: 'Satellite data, products, documentation के बारे में पूछें...',
-    bn: 'Satellite data, products, documentation সম্পর্কে জিজ্ঞাস করুন...',
-    ta: 'Satellite data, products, documentation பற்றி கேளுங்கள்...',
-    te: 'Satellite data, products, documentation గురించి అడగండి...'
+    en: '🛰️ Ask about satellites, space missions, data products...',
+    hi: '🛰️ Satellites, space missions, data products के बारे में पूछें...',
+    bn: '🛰️ Satellites, space missions, data products সম্পর্কে জিজ্ঞাস করুন...',
+    ta: '🛰️ Satellites, space missions, data products பற்றி கேளுங்கள்...',
+    te: '🛰️ Satellites, space missions, data products గురించి అడగండి...'
   };
 
   // Typing indicators
   const typingTexts = {
-    en: 'AI is thinking...',
-    hi: 'AI सोच रहा है...',
-    bn: 'AI চিন্তা করছে...',
-    ta: 'AI யோசித்துக் கொண்டிருக்கிறது...',
-    te: 'AI ఆలోచిస్తోంది...'
+    en: '🤖 Space AI is processing...',
+    hi: '🤖 Space AI प्रोसेसिंग कर रहा है...',
+    bn: '🤖 Space AI প্রসেসিং করছে...',
+    ta: '🤖 Space AI செயலாக்கம் செய்கிறது...',
+    te: '🤖 Space AI ప్రాసెసింగ్ చేస్తోంది...'
   };
 
   return (
@@ -200,35 +197,26 @@ const Index = () => {
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-3 sm:gap-6">
           {/* Chat/Graph Panel */}
           <div className="xl:col-span-2">
-            <Card className="bg-white/90 backdrop-blur-sm h-[400px] sm:h-[600px] flex flex-col shadow-xl border-0">
+            <Card className="bg-card/90 backdrop-blur-sm h-[400px] sm:h-[600px] flex flex-col shadow-2xl border border-primary/20 cosmic-glow">
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     {activeTab === 'chat' ? (
                       <>
-                        <Bot className="h-5 w-5 text-blue-600" />
-                        <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                          AI Chat Assistant
+                        <Bot className="h-5 w-5 text-primary space-float" />
+                        <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                          Space AI Assistant
                         </span>
                       </>
                     ) : (
                       <>
-                        <Search className="h-5 w-5 text-blue-600" />
-                        <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                          Knowledge Graph
+                        <Search className="h-5 w-5 text-primary space-float" />
+                        <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                          Knowledge Galaxy
                         </span>
                       </>
                     )}
                   </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowPresentation(!showPresentation)}
-                    className="text-xs"
-                  >
-                    <Presentation className="h-4 w-4 mr-1" />
-                    PPT
-                  </Button>
                 </CardTitle>
               </CardHeader>
               
@@ -239,12 +227,12 @@ const Index = () => {
                       <ChatMessage key={message.id} message={message} />
                     ))}
                     {isTyping && (
-                      <div className="flex items-center space-x-2 text-gray-500">
-                        <Bot className="h-4 w-4" />
+                      <div className="flex items-center space-x-2 text-muted-foreground">
+                        <Bot className="h-4 w-4 space-float" />
                         <div className="flex space-x-1">
-                          <div className="animate-bounce w-2 h-2 bg-blue-600 rounded-full"></div>
-                          <div className="animate-bounce w-2 h-2 bg-blue-600 rounded-full" style={{animationDelay: '0.1s'}}></div>
-                          <div className="animate-bounce w-2 h-2 bg-blue-600 rounded-full" style={{animationDelay: '0.2s'}}></div>
+                          <div className="animate-bounce w-2 h-2 bg-primary rounded-full"></div>
+                          <div className="animate-bounce w-2 h-2 bg-primary rounded-full" style={{animationDelay: '0.1s'}}></div>
+                          <div className="animate-bounce w-2 h-2 bg-primary rounded-full" style={{animationDelay: '0.2s'}}></div>
                         </div>
                         <span className="text-sm">{typingTexts[currentLanguage]}</span>
                       </div>
@@ -252,19 +240,19 @@ const Index = () => {
                     <div ref={messagesEndRef} />
                   </CardContent>
                   
-                  <div className="p-3 sm:p-4 border-t bg-gray-50/50">
+                  <div className="p-3 sm:p-4 border-t border-primary/20 bg-muted/30">
                     <div className="flex space-x-2">
                       <Input
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
                         onKeyPress={handleKeyPress}
                         placeholder={placeholders[currentLanguage]}
-                        className="flex-1 bg-white text-sm"
+                        className="flex-1 bg-background border-primary/30 text-sm focus:border-primary"
                       />
                       <Button 
                         onClick={handleSendMessage} 
                         disabled={!inputValue.trim()}
-                        className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                        className="bg-gradient-to-r from-primary to-accent hover:from-primary/80 hover:to-accent/80 cosmic-glow"
                         size="sm"
                       >
                         <Send className="h-4 w-4" />
@@ -282,23 +270,19 @@ const Index = () => {
 
           {/* Sidebar */}
           <div className="space-y-3 sm:space-y-6">
-            {showPresentation ? (
-              <ProjectPresentation />
-            ) : (
-              <QuerySuggestions onSuggestionClick={handleSuggestionClick} currentLanguage={currentLanguage} />
-            )}
+            <QuerySuggestions onSuggestionClick={handleSuggestionClick} currentLanguage={currentLanguage} />
             
-            <Card className="bg-white/90 backdrop-blur-sm shadow-lg border-0">
+            <Card className="bg-card/90 backdrop-blur-sm shadow-2xl border border-primary/20">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
-                  <MapPin className="h-5 w-5 text-green-600" />
-                  <span>AI Capabilities</span>
+                  <Satellite className="h-5 w-5 text-accent space-float" />
+                  <span>Space AI Capabilities</span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="grid grid-cols-1 gap-2">
-                  {['Geospatial Queries', 'Multi-language Support', 'Voice Commands', 'Real-time Data', 'Smart Suggestions', 'Context Awareness'].map((capability) => (
-                    <Badge key={capability} variant="secondary" className="justify-center py-1 text-xs">
+                  {['🛰️ Satellite Data Analysis', '🌍 Multi-language Support', '🎙️ Voice Commands', '⚡ Real-time Processing', '💡 Smart Suggestions', '🧠 Context Awareness'].map((capability) => (
+                    <Badge key={capability} variant="secondary" className="justify-center py-1 text-xs bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
                       {capability}
                     </Badge>
                   ))}
@@ -306,17 +290,17 @@ const Index = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-white/90 backdrop-blur-sm shadow-lg border-0">
+            <Card className="bg-card/90 backdrop-blur-sm shadow-2xl border border-primary/20">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
-                  <Search className="h-5 w-5 text-purple-600" />
-                  <span>Recent Entities</span>
+                  <Search className="h-5 w-5 text-accent space-float" />
+                  <span>Space Mission Entities</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  {['INSAT-3D', 'Oceansat-2', 'NDVI', 'HDF5', 'AWiFS', 'L3 Products', 'MOSDAC', 'Resourcesat'].map((entity) => (
-                    <Badge key={entity} variant="outline" className="text-xs hover:bg-blue-50 cursor-pointer transition-colors">
+                  {['🛰️ INSAT-3D', '🌊 Oceansat-2', '🌱 NDVI', '📊 HDF5', '📡 AWiFS', '🔬 L3 Products', '🚀 MOSDAC', '🛰️ Resourcesat'].map((entity) => (
+                    <Badge key={entity} variant="outline" className="text-xs hover:bg-primary/10 cursor-pointer transition-colors border-primary/30">
                       {entity}
                     </Badge>
                   ))}
